@@ -1,4 +1,4 @@
-# Gipermart
+# Ecommerce
 
 ## Project Setup
 ### Create Virtual Environment
