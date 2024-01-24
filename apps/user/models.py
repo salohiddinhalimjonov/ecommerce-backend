@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
 class AddressModel(models.Model):
@@ -37,7 +37,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(phone_number, password, **extra_fields)
 
 
-class UserModel(AbstractBaseUser):
+class UserModel(AbstractBaseUser, PermissionsMixin):
     MALE = 'male'
     FEMALE = 'female'
     gender_choices = (
@@ -52,7 +52,7 @@ class UserModel(AbstractBaseUser):
     gender = models.CharField(max_length=16, choices=gender_choices)
     email = models.EmailField(blank=True)
     address = models.ForeignKey(AddressModel, on_delete=models.SET_NULL, null=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
@@ -66,11 +66,7 @@ class UserModel(AbstractBaseUser):
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
 
-    def has_perm(self, perm, obj=None):
-        return True
 
-    def has_module_perms(selfself, app_label):
-        return True
 
 
 

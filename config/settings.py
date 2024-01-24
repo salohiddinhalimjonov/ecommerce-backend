@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     #Apps
     "apps.user",
     "apps.product",
@@ -132,6 +133,12 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+
+MODELTRANSLATION_LANGUAGES = ('uz', 'en')
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
+MODELTRANSLATION_TRANSLATION_FILES = [
+    'product.translation',
+]
 
 
 # Static files (CSS, JavaScript, Images)
