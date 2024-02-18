@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from apps.user.managers import CustomUserManager
 
 
 class AddressModel(models.Model):
@@ -14,27 +16,6 @@ class AddressModel(models.Model):
 
     def __str__(self):
         return f"{self.city} {self.district}, {self.street}"
-
-
-class CustomUserManager(BaseUserManager):
-    def create_user(self, phone_number, password=None, **extra_fields):
-        """
-        Creates and saves a User with the given email and password.
-        """
-        if not phone_number:
-            raise ValueError('The Email field must be set')
-        user = self.model(phone_number=phone_number, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, phone_number, password=None, **extra_fields):
-        """
-        Creates and saves a superuser with the given email and password.
-        """
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        return self.create_user(phone_number, password, **extra_fields)
 
 
 class UserModel(AbstractBaseUser, PermissionsMixin):
@@ -54,11 +35,21 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     address = models.ForeignKey(AddressModel, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
+    admin_password = models.CharField(max_length=256, blank=True)
+    password = None
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []
+
+    def save(self, *args, **kwargs):
+        if self.is_staff or self.is_superuser:
+            if not self.admin_password:
+                return ValueError('Admin Password must be set!')
+            else:
+                self.admin_password = make_password(self.admin_password)
+        super(UserModel, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return self.phone_number
