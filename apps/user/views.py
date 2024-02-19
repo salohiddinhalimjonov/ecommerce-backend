@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import check_password
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import authentication, permissions
 from .serializers import SendPhoneNumberSerializer, VerifyPhoneNumberSerializer, UserSerializer, AdminLoginSerializer, AdminCreateSerializer,AdminSerializer
 from .models import UserModel
@@ -113,7 +114,7 @@ class AdminView(APIView):
         try:
             user = UserModel.objects.get(phone_number=phone_number)
             user.is_staff = True
-        except UserModel.DeosNotExist:
+        except ObjectDoesNotExist:
             user = UserModel.objects.create(phone_number=phone_number, admin_password=admin_password, is_staff=True)
         else:
             user.admin_password = admin_password
