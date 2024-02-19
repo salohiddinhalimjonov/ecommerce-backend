@@ -94,7 +94,7 @@ class AdminLoginView(APIView):
         user = UserModel.objects.filter(phone_number=phone_number, is_staff=True).first()
         if not user:
             return Response({'status': 'You are not a staff user!'}, status=status.HTTP_400_BAD_REQUEST)
-        elif not check_password(user.admin_password, password):
+        elif not check_password(password, user.admin_password):
             return Response({'status': 'Incorrect password!'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             token, _ = Token.objects.get_or_create(user=user)
