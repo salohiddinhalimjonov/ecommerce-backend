@@ -31,7 +31,6 @@ class UserSerializer(serializers.ModelSerializer):
             'email'
         ]
         extra_kwargs = {
-            'id': {'read_only': True},
             'phone_number': {'read_only': True},
         }
 
@@ -59,6 +58,5 @@ class AdminSerializer(serializers.ModelSerializer):
             'admin_password'
         ]
         extra_kwargs = {
-            'id': {'read_only': True},
             'phone_number': {'read_only': True},
         }
