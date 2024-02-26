@@ -176,3 +176,4 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "user.UserModel"
+IMAGE_SIZE_TO_COMPRESS = 1024 * 1024

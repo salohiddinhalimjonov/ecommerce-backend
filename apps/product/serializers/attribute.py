@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from apps.product.models import Attribute, AttributeValue
 
+
 class AttributeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attribute
