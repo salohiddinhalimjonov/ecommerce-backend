@@ -7,8 +7,14 @@ class AttributeSerializer(serializers.ModelSerializer):
         model = Attribute
         fields = [
             'id',
-            'title'
+            'title',
+            'category'
         ]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.category:
+            representation['category_title'] = instance.category.all().values('title')
+        return representation
 
 
 class AttributeValueSerializer(serializers.ModelSerializer):

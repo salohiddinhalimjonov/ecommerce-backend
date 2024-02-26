@@ -39,6 +39,8 @@ class Category(models.Model):
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to='product/category/%Y/%m/%d/', null=True, blank=True)
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.CASCADE)
+    level = models.IntegerField(default=1)
+
 
     def save(self, *args, **kwargs):
         image = self.image
@@ -49,7 +51,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
-
 
 
 class Product(BaseModel):
