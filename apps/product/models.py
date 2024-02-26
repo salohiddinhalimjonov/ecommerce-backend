@@ -2,6 +2,13 @@ from django.db import models
 from apps.common.models import BaseModel
 
 
+class Brannd(models.Model):
+    title = models.CharField(max_length=256)
+    image = models.ImageField(upload_to='product/brand/%Y/%m/%d/', null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
 
 class Attribute(models.Model):
     title = models.CharField(max_length=256)
@@ -31,7 +38,7 @@ class Category(models.Model):
 
 class Product(BaseModel):
     title = models.CharField(max_length=256)
-    image = models.ImageField(upload_to='product/product_main/%Y/%m/%d/')
+    image = models.ImageField(upload_to='product/product_main/%Y/%m/%d/', null=True, blank=True)
     price = models.DecimalField(max_digits=21, decimal_places=2)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
