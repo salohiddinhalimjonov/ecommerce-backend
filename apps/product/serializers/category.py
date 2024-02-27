@@ -29,6 +29,28 @@ class CategoryListSerializer(serializers.ModelSerializer):
             return None
 
 
+class CategoryDetailSerializer(serializers.ModelSerializer):
+    parent = serializers.SerializerMethodField()
+    class Meta:
+        model = Category
+        fields = [
+            'id',
+            'title',
+            'parent'
+        ]
+        extra_kwargs = {
+            'parent': {
+                'required': False
+            }
+        }
+    def get_parent(self, obj):
+        if obj.level == 1:
+            return None
+        else:
+            data = {'id': obj.parent.id, 'title': obj.parent.title}
+            return data
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -38,4 +60,19 @@ class CategorySerializer(serializers.ModelSerializer):
             'image',
             'parent'
         ]
+        extra_kwargs = {
+            'parent': {
+                'required': False
+            },
+            'image': {
+                'required': False
+            }
+        }
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.image:
+            image_url = instance.image.url
+            representation['image'] = request.build_absolute_uri(image_url)
+        return representation

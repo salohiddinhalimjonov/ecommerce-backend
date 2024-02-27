@@ -8,7 +8,6 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.core.files import File
 
-
 def upload(instance, filename):
     today = datetime.datetime.now()
     file_format = filename.split('.')[-1]

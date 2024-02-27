@@ -43,10 +43,9 @@ class Category(models.Model):
 
 
     def save(self, *args, **kwargs):
-        image = self.image
-        if image:
-            if image.size > settings.IMAGE_SIZE_TO_COMPRESS:
-                self.image = compress_image(image)
+        if self.image:
+            if self.image.size > settings.IMAGE_SIZE_TO_COMPRESS:
+                self.image = compress_image(self.image)
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
