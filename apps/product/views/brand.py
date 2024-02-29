@@ -18,3 +18,4 @@ class BrandViewSet(ModelViewSet):
         context = super().get_serializer_context()
         context.update({"request": self.request})
         return context
+

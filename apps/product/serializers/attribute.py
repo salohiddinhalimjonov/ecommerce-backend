@@ -18,6 +18,7 @@ class AttributeSerializer(serializers.ModelSerializer):
 
 
 class AttributeValueSerializer(serializers.ModelSerializer):
+    value = serializers.ListSerializer(child=serializers.CharField())
     class Meta:
         model = AttributeValue
         fields = [
