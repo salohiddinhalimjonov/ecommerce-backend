@@ -30,7 +30,6 @@ class CategoryViewSet(ModelViewSet):
             if parent.level != 1:
                 return Response({'status':'Parent can not be sub category!'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                print(serializer.validated_data)
                 obj = Category(level=2, **serializer.validated_data)
                 obj.save()
         else:
