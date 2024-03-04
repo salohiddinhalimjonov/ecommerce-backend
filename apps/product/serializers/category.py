@@ -76,3 +76,21 @@ class CategorySerializer(serializers.ModelSerializer):
             image_url = instance.image.url
             representation['image'] = request.build_absolute_uri(image_url)
         return representation
+
+
+class SubCategorySerializer(serializers.Serializer):
+    class Meta:
+        model = Category
+        fields = [
+            'id',
+            'title',
+            'image'
+        ]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.image:
+            image_url = instance.image.url
+            representation['image'] = request.build_absolute_uri(image_url)
+        return representation

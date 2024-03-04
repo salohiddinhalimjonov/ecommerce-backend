@@ -1,9 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from apps.product.models import Category
 from apps.common.permissions import EditedPermissionClass
-from apps.product.serializers.category import CategorySerializer, CategoryListSerializer, CategoryDetailSerializer
+from apps.product.serializers.category import CategorySerializer, CategoryListSerializer, CategoryDetailSerializer, SubCategorySerializer
 
 
 class CategoryViewSet(ModelViewSet):
@@ -60,6 +61,20 @@ class CategoryViewSet(ModelViewSet):
         serializer.save()
         serializer = CategorySerializer(instance, context={"request": self.request})
         return Response({'updated_data': serializer.data}, status=status.HTTP_201_CREATED)
+
+
+
+class SubCategoryView(ListAPIView):
+    permission_classes = [permissions.AllowAny,]
+    serializer_class = SubCategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.filter(level=2)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
 
 
