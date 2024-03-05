@@ -98,7 +98,11 @@ class SubCategorySerializer(serializers.Serializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         request = self.context.get('request')
+        parent = {'id': instance.parent.id, 'title': instance.parent.title}
         if instance.image:
             image_url = instance.image.url
+            representation['id'] = instance.id
+            representation['title'] = instance.title
             representation['image'] = request.build_absolute_uri(image_url)
+            representation['parent'] = parent
         return representation
