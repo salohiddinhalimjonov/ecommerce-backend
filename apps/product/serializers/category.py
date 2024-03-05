@@ -23,8 +23,16 @@ class CategoryListSerializer(serializers.ModelSerializer):
             return None
 
     def get_children(self, obj):
+        request = self.context.get('request')
         if obj.level == 1:
-            return obj.children.all().values('id', 'title')
+            child_list = []
+            for child in obj.children.all():
+                if child.image:
+                    child_list.append({'id': child.id, 'title': child.title, 'image': request.build_absolute_uri(child.image.url)})
+                else:
+                    child_list.append({'id': child.id, 'title': child.title, 'image':None})
+            return child_list
+
         else:
             return None
 
