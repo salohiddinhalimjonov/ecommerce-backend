@@ -44,6 +44,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
+            'image',
             'parent'
         ]
         extra_kwargs = {
@@ -57,6 +58,14 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
         else:
             data = {'id': obj.parent.id, 'title': obj.parent.title}
             return data
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.image:
+            image_url = instance.image.url
+            representation['image'] = request.build_absolute_uri(image_url)
+        return representation
 
 
 class CategorySerializer(serializers.ModelSerializer):
