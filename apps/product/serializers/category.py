@@ -39,13 +39,15 @@ class CategoryListSerializer(serializers.ModelSerializer):
 
 class CategoryDetailSerializer(serializers.ModelSerializer):
     parent = serializers.SerializerMethodField()
+    children = serializers.SerializerMethodField()
     class Meta:
         model = Category
         fields = [
             'id',
             'title',
             'image',
-            'parent'
+            'parent',
+            'children'
         ]
         extra_kwargs = {
             'parent': {
@@ -66,6 +68,20 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
             image_url = instance.image.url
             representation['image'] = request.build_absolute_uri(image_url)
         return representation
+
+    def get_children(self, obj):
+        request = self.context.get('request')
+        if obj.level == 1:
+            child_list = []
+            for child in obj.children.all():
+                if child.image:
+                    child_list.append({'id': child.id, 'title': child.title, 'image': request.build_absolute_uri(child.image.url)})
+                else:
+                    child_list.append({'id': child.id, 'title': child.title, 'image':None})
+            return child_list
+
+        else:
+            return None
 
 
 class CategorySerializer(serializers.ModelSerializer):
