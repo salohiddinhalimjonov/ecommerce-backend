@@ -67,6 +67,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
         if instance.image:
             image_url = instance.image.url
             representation['image'] = request.build_absolute_uri(image_url)
+            representation['attributes'] = instance.attribute_set.all().values('id', 'title')
         return representation
 
     def get_children(self, obj):
