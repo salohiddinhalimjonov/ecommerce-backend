@@ -14,18 +14,32 @@ class AttributeViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         attr_list = request.data.get('attr_list')
+        values = None
         if isinstance(attr_list, list):
             for attr in attr_list:
+                if attr.get('values'):
+                    values = attr.pop('values')
                 serializer = AttributeSerializer(data=attr)
                 serializer.is_valid(raise_exception=True)
                 title = serializer.validated_data.get('title')
                 category = serializer.validated_data.get('category')
                 attr_instance = Attribute.objects.create(title=title)
                 attr_instance.category.set(category)
+                if values:
+                    for value in values:
+                        AttributeValue.objects.create(attribute=attr_instance, value=value)
         else:
+            if attr_list.get('values'):
+                values = attr.pop('values')
             serializer = AttributeSerializer(data=attr_list)
             serializer.is_valid(raise_exception=True)
-            serializer.save()
+            title = serializer.validated_data.get('title')
+            category = serializer.validated_data.get('category')
+            attr_instance = Attribute.objects.create(title=title)
+            attr_instance.category.set(category)
+            if values:
+                for value in values:
+                    AttributeValue.objects.create(attribute=attr_instance, value=value)
         return Response({'status':'Successfully Created!'}, status=status.HTTP_201_CREATED)
 
 

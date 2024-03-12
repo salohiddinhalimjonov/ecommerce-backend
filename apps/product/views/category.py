@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter
 from rest_framework import status, permissions
 from apps.product.models import Category
 from apps.common.permissions import EditedPermissionClass
@@ -9,6 +10,8 @@ from apps.product.serializers.category import CategorySerializer, CategoryListSe
 
 class CategoryViewSet(ModelViewSet):
     permission_classes = [EditedPermissionClass,]
+    filter_backends = [SearchFilter, ]
+    search_fields = ['title', ]
 
     def get_queryset(self):
         if self.action == 'list':
