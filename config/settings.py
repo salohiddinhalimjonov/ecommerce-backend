@@ -66,11 +66,21 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
+# CORS_ALLOWED_ORIGINS = [
+#     "http://127.0.0.1:5713",
+#     "http://localhost:5173",
+# ]
+CORS_ALLOW_METHODS = ["*"]
+CORS_ALLOW_HEADERS = ["*"]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5713",
     "http://localhost:5173",
 ]
-CORS_ORIGIN_ALLOW_ALL = False
+
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
