@@ -11,6 +11,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'image',
+            'title',
             'price',
             'is_available',
             'category',
@@ -53,6 +54,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'is_available',
+            'title',
             'images',
             'attribute_value',
             'product',
