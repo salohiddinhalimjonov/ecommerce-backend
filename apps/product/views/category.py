@@ -3,6 +3,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.filters import SearchFilter
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
 from apps.product.models import Category, Attribute
@@ -90,7 +91,10 @@ class SubCategoryView(ListAPIView):
 
 
 class CategoryAttributeEditView(APIView):
-    def patch(self, request):
+    serializer_class = CategoryAttributeListUpdateSerializer
+
+    @swagger_auto_schema(response_body=CategoryAttributeListUpdateSerializer)
+    def post(self, request):
         serializer = CategoryAttributeListUpdateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         pk = serializer.validated_data.get('category_id')
