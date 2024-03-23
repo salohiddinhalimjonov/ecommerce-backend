@@ -136,3 +136,14 @@ class SubCategorySerializer(serializers.Serializer):
             representation['image'] = request.build_absolute_uri(image_url)
             representation['parent'] = parent
         return representation
+
+class CategoryAttributeSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    values = serializers.ListSerializer(child=serializers.CharField())
+
+
+class CategoryAttributeListUpdateSerializer(serializers.Serializer):
+    category_id = serializers.IntegerField()
+    attributes = serializers.ListSerializer(child=CategoryAttributeSerializer())
+
+

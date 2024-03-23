@@ -1,11 +1,14 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.filters import SearchFilter
 from rest_framework import status, permissions
-from apps.product.models import Category
+from django.shortcuts import get_object_or_404
+from apps.product.models import Category, Attribute
 from apps.common.permissions import EditedPermissionClass
-from apps.product.serializers.category import CategorySerializer, CategoryListSerializer, CategoryDetailSerializer, SubCategorySerializer
+from apps.product.serializers.category import (CategorySerializer, CategoryListSerializer, CategoryDetailSerializer, SubCategorySerializer,
+                                               CategoryAttributeListUpdateSerializer)
 
 
 class CategoryViewSet(ModelViewSet):
@@ -84,6 +87,21 @@ class SubCategoryView(ListAPIView):
         context.update({"request": self.request})
         return context
 
+
+
+class CategoryAttributeEditView(APIView):
+    def patch(self, request):
+        serializer = CategoryAttributeListUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        pk = serializer.validated_data.get('category_id')
+        attributes = serializer.validated_data.get('attributes')
+        category = get_object_or_404(Category, pk=pk)
+        Attribute.objects.filter(category=category).delete()
+        for attribute in attributes:
+            instance = Attribute.objects.create(category=category, title=attribute['title'])
+            for value in attribute['values']:
+                AttributeValue.objects.create(attribute=instance, value=value)
+        return Response({'status': 'Success'}, status=status.HTTP_201_CREATED)
 
 
 
