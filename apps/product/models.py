@@ -1,7 +1,12 @@
+from datetime import datetime
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import pre_save
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.dispatch import receiver
 from apps.common.models import BaseModel
 from apps.common.utils import compress_image
+from apps.user.models import UserModel
 
 
 class Brannd(models.Model):
@@ -99,13 +104,38 @@ class ProductVariantImage(models.Model):
 
 
 class Discount(models.Model):
-    product = models.ManyToManyField(Product)
-    product_variant = models.ManyToManyField(ProductVariant)
-    is_active = models.BooleanField(default=False)
+    product = models.ManyToManyField(Product, related_name='discounts')
+    product_variant = models.ManyToManyField(ProductVariant, related_name='discounts')
+    name = models.CharField(max_length=100)
+    amount = models.PositiveSmallIntegerField(null=True, blank=True)
+    percent = models.PositiveSmallIntegerField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    percent = models.DecimalField(max_digits=3, decimal_places=1)
+
 
     def __str__(self):
-        return f'{self.priduct.title} - {self.percent} - {self.id}'
+        return self.name
 
+
+# class ProductReview(BaseModel):
+#     product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name='reviews')
+#     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='reviews')
+#     content = models.TextField(blank=True, null=True)
+#     stars = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+#
+#     class Meta:
+#         ordering = ['-created_datetime']
+#         unique_together = ['product', 'user']
+#         verbose_name = 'Product Review'
+#         verbose_name_plural = 'Product Reviews'
+
+
+
+@receiver(pre_save, sender=Discount)
+def status(sender, instance, *args, **kwargs):
+    today = date.today()
+    if instance.start_date <= today <= instance.end_date:
+        instance.is_active = True
+    else:
+        instance.is_active = False
