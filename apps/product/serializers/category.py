@@ -137,9 +137,15 @@ class SubCategorySerializer(serializers.Serializer):
             representation['parent'] = parent
         return representation
 
+class CategoryAttributeValueSerializer(serializers.Serializer):
+    value_id = serializers.IntegerField(allow_null=True)
+    value = serializers.CharField()
+
+
 class CategoryAttributeSerializer(serializers.Serializer):
+    attribute_id = serializers.IntegerField(allow_null=True)
     title = serializers.CharField()
-    values = serializers.ListSerializer(child=serializers.CharField())
+    values = serializers.ListSerializer(child=CategoryAttributeValueSerializer())
 
 
 class CategoryAttributeListUpdateSerializer(serializers.Serializer):

@@ -6,7 +6,7 @@ from rest_framework.filters import SearchFilter
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
-from apps.product.models import Category, Attribute
+from apps.product.models import Category, Attribute, AttributeValue
 from apps.common.permissions import EditedPermissionClass
 from apps.product.serializers.category import (CategorySerializer, CategoryListSerializer, CategoryDetailSerializer, SubCategorySerializer,
                                                CategoryAttributeListUpdateSerializer)
@@ -94,17 +94,31 @@ class CategoryAttributeEditView(APIView):
     serializer_class = CategoryAttributeListUpdateSerializer
 
     @swagger_auto_schema(response_body=CategoryAttributeListUpdateSerializer)
-    def post(self, request):
+    def patch(self, request):
         serializer = CategoryAttributeListUpdateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         pk = serializer.validated_data.get('category_id')
         attributes = serializer.validated_data.get('attributes')
         category = get_object_or_404(Category, pk=pk)
-        Attribute.objects.filter(category=category).delete()
         for attribute in attributes:
-            instance = Attribute.objects.create(category=category, title=attribute['title'])
+            if attribute['attribute_id']:
+                instance = get_object_or_404(Attribute, pk=attribute['attribute_id'])
+                instance.title = attribute['title']
+                instance.category.set([category])
+                instance.save()
+            else:
+                instance = Attribute.objects.create(title=attribute['title'])
+                instance.category.add(category)
+
             for value in attribute['values']:
-                AttributeValue.objects.create(attribute=instance, value=value)
+                if value['value_id']:
+                    instance_value = get_object_or_404(AttributeValue, pk=value['value_id'])
+                    instance_value.value = value['value']
+                    instance_value.attribute = instance
+                    instance_value.save()
+                else:
+                    instance_value = AttributeValue.objects.create(attribute=instance, value=value)
+
         return Response({'status': 'Success'}, status=status.HTTP_201_CREATED)
 
 
