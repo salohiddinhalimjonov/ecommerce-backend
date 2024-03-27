@@ -36,9 +36,8 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     admin_password = models.CharField(max_length=256, blank=True)
-    password = None
     objects = CustomUserManager()
-
+    password = None
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []
 

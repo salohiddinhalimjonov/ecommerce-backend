@@ -18,24 +18,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'is_new'
         ]
 
-    def create(self, validated_data):
-        price = validated_data.pop('price')
-        if isinstance(price, str) and price.isdigit():
-            price = int(price)
-        product = Product.objects.create(price=price, **validated_data)
-        return product
-
-    def update(self, instance: Product, validated_data):
-        price = validated_data.pop('price')
-        if isinstance(price, str) and price.isdigit():
-            price = int(price)
-        instance.image = validated_data.get('image')
-        instance.price = validated_data.get('price')
-        instance.is_available = validated_data.get('is_available')
-        instance.category = validated_data.get('category')
-        instance.is_new = validated_data.get('is_new')
-        instance.save()
-        return instance
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
