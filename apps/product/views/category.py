@@ -100,15 +100,16 @@ class CategoryAttributeEditView(APIView):
         pk = serializer.validated_data.get('category_id')
         attributes = serializer.validated_data.get('attributes')
         category = get_object_or_404(Category, pk=pk)
+        category.attribute_set.clear()
         for attribute in attributes:
             if attribute['attribute_id']:
                 instance = get_object_or_404(Attribute, pk=attribute['attribute_id'])
                 instance.title = attribute['title']
-                instance.category.set([category])
                 instance.save()
+                category.attribute_set.add(instance)
             else:
                 instance = Attribute.objects.create(title=attribute['title'])
-                instance.category.add(category)
+                category.attribute_set.add(instance)
 
             for value in attribute['values']:
                 if value['value_id']:

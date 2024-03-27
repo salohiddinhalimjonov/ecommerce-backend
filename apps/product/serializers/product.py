@@ -76,7 +76,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     def update(self, instance: ProductVariant, validated_data):
         images = validated_data.get('images')
         instance.is_available = validated_data.is_available
-        instance.attribute_value = validated_data.attribute_value
+        instance.attribute_value.set(validated_data.attribute_value)
         instance.product = validated_data.product
         instance.other_detail = validated_data.other_detail
         instance.price = validated_data.price
