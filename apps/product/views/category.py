@@ -118,7 +118,7 @@ class CategoryAttributeEditView(APIView):
                     instance_value.attribute = instance
                     instance_value.save()
                 else:
-                    instance_value = AttributeValue.objects.create(attribute=instance, value=value)
+                    instance_value = AttributeValue.objects.create(attribute=instance, value=value['value'])
 
         return Response({'status': 'Success'}, status=status.HTTP_201_CREATED)
 
