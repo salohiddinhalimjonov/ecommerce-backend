@@ -81,7 +81,7 @@ class SubCategoryView(ListAPIView):
     serializer_class = SubCategorySerializer
 
     def get_queryset(self):
-        return Category.objects.filter(level=2)
+        return Category.objects.filter(level=2, parent__isnull=False)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
