@@ -30,13 +30,13 @@ class ProductVariantViewSet(ModelViewSet):
     def get_serializer_class(self):
         return ProductVariantSerializer
 
-    def perform_create(self, serializer):
-        data = serializer(self.request.data)
-        data.is_valid(raise_exception=True)
-        serializer.create(data.validated_data)
-
-    def perform_update(self, serializer):
-        serializer.update()
+    # def perform_create(self, serializer):
+    #     data = ProductVariant(self.request.data)
+    #     data.is_valid(raise_exception=True)
+    #     serializer.create(data.validated_data)
+    #
+    # def perform_update(self, serializer):
+    #     serializer.update()
 
 
 class ProductVariantListAPIView(ListAPIView):
