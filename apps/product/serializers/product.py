@@ -29,7 +29,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductVariantSerializer(serializers.ModelSerializer):
-    images = serializers.ListSerializer(child=serializers.ImageField())
+    images = serializers.ListSerializer(child=serializers.ImageField(), required=False, allow_null=True)
     price_with_discount = serializers.SerializerMethodField()
     class Meta:
         model = ProductVariant
@@ -48,12 +48,13 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         images = validated_data.pop('images')
-        p_variant = ProductVariant.objects.create(**validated_data)
-        order = 1
-        for image in images:
-            ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
-            order += 1
-        return p_variant
+        if images:
+            p_variant = ProductVariant.objects.create(**validated_data)
+            order = 1
+            for image in images:
+                ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
+                order += 1
+            return p_variant
 
     def update(self, instance: ProductVariant, validated_data):
         images = validated_data.get('images')
