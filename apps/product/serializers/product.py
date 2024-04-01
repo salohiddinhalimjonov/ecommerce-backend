@@ -61,18 +61,14 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         images = validated_data.pop('images')
         attribute_value = validated_data.pop('attribute_value')
-        print(validated_data['title'])
-        print('hi')
         p_variant = ProductVariant.objects.create(**validated_data)
-        p_variant.attribute_value.set(validated_data.attribute_value)
-        p_variant.save()
-        print(p_variant)
+        p_variant.attribute_value.set(attribute_value)
+
         if images:
             order = 1
             for image in images:
                 ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
                 order += 1
-            return p_variant
         return p_variant
 
     def update(self, instance: ProductVariant, validated_data):
