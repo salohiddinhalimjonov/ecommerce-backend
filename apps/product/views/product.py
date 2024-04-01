@@ -22,10 +22,21 @@ class ProductVariantViewSet(ModelViewSet):
     permission_classes = [permissions.IsAdminUser,]
     serializer_class = ProductVariantSerializer
     queryset = ProductVariant.objects.all()
-    filter_backends = [DjangoFilterBackend, SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['product',]
     search_fields = ['title',]
     ordering_fields = ['product__title',]
+
+    def get_serializer_class(self):
+        return ProductVariantSerializer
+
+    def perform_create(self, serializer):
+        data = serializer(self.request.data)
+        data.is_valid(raise_exception=True)
+        serializer.create(data.validated_data)
+
+    def perform_update(self, serializer):
+        serializer.update()
 
 
 class ProductVariantListAPIView(ListAPIView):

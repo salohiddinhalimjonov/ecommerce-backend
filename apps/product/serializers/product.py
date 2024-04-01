@@ -31,6 +31,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductVariantSerializer(serializers.ModelSerializer):
     images = serializers.ListSerializer(child=serializers.ImageField(), required=False, allow_null=True)
     price_with_discount = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductVariant
         fields = [
@@ -46,17 +47,33 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             'quantity'
         ]
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        images = ProductVariantImage.objects.filter(product_variant=instance)
+        image_urls = [request.build_absolute_uri(image.url) for image in images]
+        representation['images'] = image_urls
+        return representation
+
+    def get_price_with_discount(self, obj):
+        return get_price_with_discount(obj, user=self.context['request'].user)
+
     def create(self, validated_data):
         images = validated_data.pop('images')
         attribute_value = validated_data.pop('attribute_value')
+        print(validated_data['title'])
+        print('hi')
+        p_variant = ProductVariant.objects.create(**validated_data)
+        p_variant.attribute_value.set(validated_data.attribute_value)
+        p_variant.save()
+        print(p_variant)
         if images:
-            p_variant = ProductVariant.objects.create(**validated_data)
             order = 1
-            p_variant.attribute_value.set(validated_data.attribute_value)
             for image in images:
                 ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
                 order += 1
             return p_variant
+        return p_variant
 
     def update(self, instance: ProductVariant, validated_data):
         images = validated_data.get('images')
@@ -74,16 +91,6 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             order += 1
         return instance
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        request = self.context.get('request')
-        images = ProductVariantImage.objects.filter(product_variant=instance)
-        image_urls = [request.build_absolute_uri(image.url) for image in images]
-        representation['images'] = image_urls
-        return representation
-
-    def get_price_with_discount(self, obj):
-        return get_price_with_discount(obj, user=self.context['request'].user)
 
 
 # class ProductVariantListSerializer(serializers.ModelSerializer):
