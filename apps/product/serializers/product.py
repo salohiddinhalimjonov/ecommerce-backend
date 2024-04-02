@@ -31,6 +31,9 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductVariantSerializer(serializers.ModelSerializer):
     images = serializers.ListSerializer(child=serializers.ImageField(), required=False, allow_null=True)
     price_with_discount = serializers.SerializerMethodField()
+    product = serializers.CharField()
+    price = serializers.CharField()
+    quantity = serializers.CharField()
 
     class Meta:
         model = ProductVariant
@@ -46,6 +49,13 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             'price_with_discount',
             'quantity'
         ]
+        extra_kwargs = {
+            'attribute_value': {'allow_null':True, 'required':False},
+            'is_available': {'allow_null':True, 'required':False},
+            'other_detail': {'allow_null':True, 'required':False},
+            'title': {'allow_null':True, 'required':False},
+
+        }
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -60,18 +70,15 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         images = validated_data.pop('images')
-        attribute_value = validated_data.pop('attribute_value')
-        p_variant = ProductVariant.objects.create(**validated_data)
-        p_variant.attribute_value.set(attribute_value)
+        product = Product.objects.get(id=validated_data.pop('product'))
+        #attribute_value = validated_data.pop('attribute_value')
+        p_variant = ProductVariant.objects.create(product=product, quantity=int(validated_data.pop('quantity')), price=float(validated_data.pop('price')))
+        #p_variant.attribute_value.set(attribute_value)
 
         if images:
-            return images
-            print('hi')
             order = 1
             for image in images:
-                print(image.url)
                 a = ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
-                print(a)
                 order += 1
         return p_variant
 
