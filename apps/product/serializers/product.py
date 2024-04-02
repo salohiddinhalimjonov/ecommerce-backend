@@ -65,9 +65,12 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         p_variant.attribute_value.set(attribute_value)
 
         if images:
+            print('hi')
             order = 1
             for image in images:
-                ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
+                print(image.url)
+                a = ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
+                print(a)
                 order += 1
         return p_variant
 
