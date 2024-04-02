@@ -42,7 +42,6 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             'is_available',
             'title',
             'images',
-            'attribute_value',
             'product',
             'other_detail',
             'price',
@@ -50,7 +49,6 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             'quantity'
         ]
         extra_kwargs = {
-            'attribute_value': {'allow_null':True, 'required':False},
             'is_available': {'allow_null':True, 'required':False},
             'other_detail': {'allow_null':True, 'required':False},
             'title': {'allow_null':True, 'required':False},
