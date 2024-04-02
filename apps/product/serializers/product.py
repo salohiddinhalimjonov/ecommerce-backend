@@ -27,10 +27,10 @@ class ProductSerializer(serializers.ModelSerializer):
             representation['image'] = request.build_absolute_uri(image_url)
         return representation
 
-class ProductImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductVariantImage
-        fields = ['id', 'image', 'order']
+class ProductImageSerializer(serializers.Serializer):
+    image = serializers.ImageField()
+    order = serializers.IntegerField()
+
 
 class ProductVariantSerializer(serializers.ModelSerializer):
     images = serializers.ListSerializer(child=ProductImageSerializer())
