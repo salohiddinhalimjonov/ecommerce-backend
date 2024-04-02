@@ -67,6 +67,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         return get_price_with_discount(obj, user=self.context['request'].user)
 
     def create(self, validated_data):
+        print(validated_data)
         images = validated_data.pop('images')
         product = Product.objects.get(id=validated_data.pop('product'))
         #attribute_value = validated_data.pop('attribute_value')
