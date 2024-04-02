@@ -27,13 +27,14 @@ class ProductSerializer(serializers.ModelSerializer):
             representation['image'] = request.build_absolute_uri(image_url)
         return representation
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariantImage
+        fields = ['id', 'image', 'order']
 
 class ProductVariantSerializer(serializers.ModelSerializer):
-    images = serializers.ListSerializer(child=serializers.ImageField(), required=False, allow_null=True)
+    images = serializers.ListSerializer(child=ProductImageSerializer())
     price_with_discount = serializers.SerializerMethodField()
-    product = serializers.CharField()
-    price = serializers.CharField()
-    quantity = serializers.CharField()
 
     class Meta:
         model = ProductVariant
@@ -43,17 +44,13 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             'title',
             'images',
             'product',
+            'attribute_value',
             'other_detail',
             'price',
             'price_with_discount',
             'quantity'
         ]
-        extra_kwargs = {
-            'is_available': {'allow_null':True, 'required':False},
-            'other_detail': {'allow_null':True, 'required':False},
-            'title': {'allow_null':True, 'required':False},
 
-        }
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -67,18 +64,15 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         return get_price_with_discount(obj, user=self.context['request'].user)
 
     def create(self, validated_data):
-        print(validated_data)
         images = validated_data.pop('images')
         product = Product.objects.get(id=validated_data.pop('product'))
-        #attribute_value = validated_data.pop('attribute_value')
-        p_variant = ProductVariant.objects.create(product=product, quantity=int(validated_data.pop('quantity')), price=float(validated_data.pop('price')))
-        #p_variant.attribute_value.set(attribute_value)
+        attribute_value = validated_data.pop('attribute_value')
+        p_variant = ProductVariant.objects.create(**validated_data)
+        p_variant.attribute_value.set(attribute_value)
 
         if images:
-            order = 1
             for image in images:
-                a = ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
-                order += 1
+                a = ProductVariantImage.objects.create(product_variant=p_variant, image=image['image'], order=image['order'])
         return p_variant
 
     def update(self, instance: ProductVariant, validated_data):
@@ -91,10 +85,8 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         instance.quantity = validated_data.quantity
         instance.save()
         ProductVariantImage.objects.filter(product_variant=instance).delete()
-        order = 1
         for image in images:
-            ProductVariantImage.objects.create(product_variant=p_variant, image=image, order=order)
-            order += 1
+            ProductVariantImage.objects.create(product_variant=p_variant, image=image['image'], order=image['order'])
         return instance
 
 
