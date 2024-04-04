@@ -33,7 +33,7 @@ class Attribute(models.Model):
 
 
 class AttributeValue(models.Model):
-    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='values')
     value = models.CharField(max_length=256)
 
     def __str__(self):
