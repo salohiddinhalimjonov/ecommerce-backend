@@ -26,7 +26,7 @@ class Brannd(models.Model):
 
 class Attribute(models.Model):
     title = models.CharField(max_length=256)
-    category = models.ManyToManyField("Category")
+    category = models.ManyToManyField("Category", related_name='attributes')
 
     def __str__(self):
         return self.title
