@@ -14,7 +14,7 @@ class AttributeSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         if instance.category:
             representation['category_title'] = instance.category.all().values('title')
-            representation['values'] = instance.values.all().values('id','value')
+            representation['values'] = instance.values.all().values_list('id','value')
         return representation
 
 
