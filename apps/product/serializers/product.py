@@ -120,3 +120,16 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 #
 #     def get_price_with_discount(self, obj):
 #         return get_price_with_discount(obj, user=self.context['request'].user)
+
+class ProductVariantImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariantImage
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.image:
+            image_url = instance.image.url
+            representation['image'] = request.build_absolute_uri(image_url)
+        return representation

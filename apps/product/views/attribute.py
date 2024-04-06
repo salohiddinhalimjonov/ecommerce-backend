@@ -14,6 +14,8 @@ class AttributeViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         attr_list = request.data.get('attr_list')
+        if attr_list is None:
+            return Response({'status': 'Attr List is None'}, status=status.HTTP_400_BAD_REQUEST)
         values = None
         for attr in attr_list:
             if attr.get('values'):

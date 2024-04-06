@@ -4,7 +4,7 @@ from apps.product.views.attribute import AttributeViewSet, AttributeValueViewSet
 from apps.product.views.brand import BrandViewSet
 from apps.product.views.discount import DiscountViewSet
 from apps.product.views.category import CategoryViewSet, SubCategoryView, CategoryAttributeEditView
-from apps.product.views.product import ProductViewSet, ProductVariantViewSet, ProductVariantListAPIView
+from apps.product.views.product import ProductViewSet, ProductVariantViewSet, ProductVariantListAPIView, ProductVariantImageViewSet
 
 
 router = DefaultRouter()
@@ -15,6 +15,7 @@ router.register('discount', DiscountViewSet, basename='discount')
 router.register('category', CategoryViewSet, basename='category')
 router.register('product', ProductViewSet, basename='product')
 router.register('product_variant', ProductVariantViewSet, basename='product_variant')
+router.register('product_variant_image', ProductVariantImageViewSet, basename='product_variant_image')
 
 
 urlpatterns = [
