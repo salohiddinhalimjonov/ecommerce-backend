@@ -69,7 +69,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
             representation['image'] = request.build_absolute_uri(image_url)
             attributes = [{'id': attribute.id,
                            'title': attribute.title,
-                           'values': attribute.values.values('id', 'value')}
+                           'values': attribute.values_hi.values('id', 'value')}
                           for attribute in instance.attributes.all()]
             representation['attributes'] = attributes
         return representation
