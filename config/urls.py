@@ -38,4 +38,5 @@ urlpatterns = [
     ),
     path('', include('apps.user.urls')),
     path('', include('apps.product.urls')),
+    path('', include('apps.common.urls')),
 ]
