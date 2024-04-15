@@ -33,7 +33,7 @@ class ProductImageSerializer(serializers.Serializer):
 
 
 class ProductVariantSerializer(serializers.ModelSerializer):
-    images = serializers.ListSerializer(child=ProductImageSerializer())
+    images = serializers.ListSerializer(child=ProductImageSerializer(), required=False)
     price_with_discount = serializers.SerializerMethodField()
 
     class Meta:
