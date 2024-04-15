@@ -65,7 +65,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         images = validated_data.pop('images')
-        product = Product.objects.get(id=validated_data.pop('product'))
+        #product = Product.objects.get(id=validated_data.pop('product'))
         attribute_value = validated_data.pop('attribute_value')
         p_variant = ProductVariant.objects.create(**validated_data)
         p_variant.attribute_value.set(attribute_value)
