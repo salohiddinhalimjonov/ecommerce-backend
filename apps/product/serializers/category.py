@@ -151,5 +151,3 @@ class CategoryAttributeSerializer(serializers.Serializer):
 class CategoryAttributeListUpdateSerializer(serializers.Serializer):
     category_id = serializers.IntegerField()
     attributes = serializers.ListSerializer(child=CategoryAttributeSerializer())
-
-

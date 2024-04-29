@@ -19,7 +19,7 @@ class ProductViewSet(ModelViewSet):
 
 
 class ProductVariantViewSet(ModelViewSet):
-    permission_classes = [permissions.IsAdminUser,]
+    permission_classes = [EditedPermissionClass,]
     serializer_class = ProductVariantSerializer
     queryset = ProductVariant.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter]
