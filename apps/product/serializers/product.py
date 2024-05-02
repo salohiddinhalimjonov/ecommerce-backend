@@ -56,7 +56,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         request = self.context.get('request')
         images = ProductVariantImage.objects.filter(product_variant=instance)
-        image_urls = [request.build_absolute_uri(image.url) for image in images]
+        image_urls = [request.build_absolute_uri(image.image.url) for image in images if image.image]
         representation['images'] = image_urls
         return representation
 
