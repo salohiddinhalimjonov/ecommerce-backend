@@ -27,6 +27,36 @@ class ProductSerializer(serializers.ModelSerializer):
             representation['image'] = request.build_absolute_uri(image_url)
         return representation
 
+class ProductCustomListSerializer(serializers.ModelSerializer):
+    product_variant = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = [
+            'id',
+            'image',
+            'title',
+            'price',
+            'is_available',
+            'category',
+            'is_new'
+        ]
+
+    def get_product_variant(self, obj):
+        product_variants = obj.product_variant.all()
+        serializer = ProductVariantSerializer(product_variants, many=True)
+        return serializer.data
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.image:
+            image_url = instance.image.url
+            representation['image'] = request.build_absolute_uri(image_url)
+        return representation
+
+
+
 class ProductImageSerializer(serializers.Serializer):
     image = serializers.ImageField()
     order = serializers.IntegerField()

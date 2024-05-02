@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, permissions, filters
 from apps.product.models import Product, ProductVariant, ProductVariantImage
 from apps.common.permissions import EditedPermissionClass
-from apps.product.serializers.product import ProductSerializer, ProductVariantSerializer, ProductVariantImageSerializer
+from apps.product.serializers.product import ProductSerializer, ProductVariantSerializer, ProductVariantImageSerializer, ProductCustomListSerializer
 from apps.product.filters import ProductVariantFilter
 
 
@@ -16,6 +16,12 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     filter_backends = [SearchFilter,]
     search_fields = ['title',]
+
+
+class ProductCustomListAPIView(ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductCustomListSerializer
+    permission_classes = [permissions.AllowAny,]
 
 
 class ProductVariantViewSet(ModelViewSet):

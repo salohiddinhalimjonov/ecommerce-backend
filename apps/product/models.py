@@ -77,7 +77,7 @@ class Product(BaseModel):
 
 
 class ProductVariant(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_variant')
     title = models.CharField(max_length=255)
     is_available = models.BooleanField(default=True)
     attribute_value = models.ManyToManyField(AttributeValue)
