@@ -39,7 +39,8 @@ class ProductCustomListSerializer(serializers.ModelSerializer):
             'price',
             'is_available',
             'category',
-            'is_new'
+            'is_new',
+            'product_variant'
         ]
 
     def get_product_variant(self, obj):
