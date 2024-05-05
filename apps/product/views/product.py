@@ -29,6 +29,7 @@ class ProductVariantViewSet(ModelViewSet):
     serializer_class = ProductVariantSerializer
     queryset = ProductVariant.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = ProductVariantFilter
     filterset_fields = ['product',]
     search_fields = ['title',]
     ordering_fields = ['product__title',]
