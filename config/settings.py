@@ -19,13 +19,13 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 # reading .env file
-environ.Env.read_env(".env")
+environ.Env.read_env("env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = "django-insecure-g^h#*teg717)3q=rhgdz()j!v+gt+g6(%e4zhcf41egx!nw-lv"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -109,9 +109,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': "django.db.backends.postgresql",
-        'NAME': env("DB_NAME"),
-        'USER': env("DB_USER"),
-        'PASSWORD': env("DB_PASSWORD"),
+        'NAME': "giper_rest",
+        'USER': "giper_rest_user",
+        'PASSWORD': "giper_rest_password",
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
